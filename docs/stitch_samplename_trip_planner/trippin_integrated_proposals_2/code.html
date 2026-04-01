@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trippin' - Yellowstone Adventure</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#2d5a27",
+              "inverse-primary": "#a1d494",
+              "surface-container-low": "#f2f4f2",
+              "tertiary-fixed": "#d9eaa3",
+              "outline-variant": "#c2c9bb",
+              "secondary-fixed-dim": "#7adc7d",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#96f996",
+              "on-tertiary-container": "#b9ca86",
+              "surface-bright": "#f8faf8",
+              "on-background": "#191c1b",
+              "primary-fixed-dim": "#a1d494",
+              "tertiary-container": "#47551e",
+              "secondary-fixed": "#96f996",
+              "surface-container-highest": "#e1e3e1",
+              "secondary": "#006e21",
+              "surface-dim": "#d8dad9",
+              "on-secondary-fixed-variant": "#005316",
+              "primary-fixed": "#bcf0ae",
+              "on-error": "#ffffff",
+              "on-tertiary-fixed": "#161f00",
+              "on-error-container": "#93000a",
+              "tertiary": "#313e08",
+              "inverse-surface": "#2e3130",
+              "surface-tint": "#3b6934",
+              "error": "#ba1a1a",
+              "on-primary-fixed-variant": "#23501e",
+              "on-secondary-fixed": "#002105",
+              "on-secondary-container": "#037524",
+              "surface-container-high": "#e6e9e7",
+              "error-container": "#ffdad6",
+              "on-primary-fixed": "#002201",
+              "on-secondary": "#ffffff",
+              "on-primary-container": "#9dd090",
+              "surface": "#f8faf8",
+              "surface-container": "#eceeec",
+              "on-surface": "#191c1b",
+              "on-primary": "#ffffff",
+              "on-surface-variant": "#42493e",
+              "outline": "#72796e",
+              "tertiary-fixed-dim": "#bdce89",
+              "background": "#f8faf8",
+              "inverse-on-surface": "#eff1ef",
+              "surface-variant": "#e1e3e1",
+              "primary": "#154212",
+              "on-tertiary": "#ffffff",
+              "on-tertiary-fixed-variant": "#3e4c16"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#f8faf8]/80 dark:bg-[#191c1b]/80 backdrop-blur-xl shadow-[0_8px_32px_rgba(25,28,27,0.06)] h-16 flex items-center justify-between px-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#154212] dark:text-[#bcf0ae]" style="">park</span>
+<span class="font-headline font-bold tracking-tight text-xl text-[#154212] dark:text-[#bcf0ae]" style="">Trippin'</span>
+</div>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="User profile avatar" class="" data-alt="professional male user profile portrait with soft natural lighting and blurred green outdoor background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCz0RCXYylJVvExs0tsFadq3oaJulj_qUJtz-NPvif0P8fozKP-ASMG_k7LlsXz4TC5M9duMT3ZUVRBVe4xSfPBpmHHi-G_KNf8cbURFNrEZemL-N8uSHVj_bVDMZh-4US5rD0RcCb5HwCGGv2ALNC_xfS4PMGPxtRG2E37Ql8udpAawx8LDlj_eo67GHxvlOWlrjltJg7VfU6vR9qpBUOPVr7yMek3f_61Bgt9FWJPz3BpCgM7o7aVLIEOHuQjj92m6Y99Cwm5A0y" style=""/>
+</div>
+</header>
+<main class="pt-24 pb-48 px-6">
+<!-- Hero Trip Section -->
+<section class="mb-10">
+<div class="relative w-full rounded-[2rem] overflow-hidden mb-6 shadow-xl h-36">
+<img class="w-full h-full object-cover" data-alt="scenic vista of Yellowstone Grand Prismatic Spring with vibrant orange and blue geothermal pools from an elevated angle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjoVKXk_cFoi_pf2tKPRWDJsjOUsGKNlerTaKG0eGW7pqBLWADbWINtnVr3wlXRsXhxEpPH_6wTyzcl0FuUg3rkC9h4zI0wOQ9S5FnO-GWlSSTeOiXZdytWihQ2mHLDj6k1XqbLzNxe9H28Lei7F7O0g8RUmyTPwQW47CjKCAIVyjl3tPzB2cZAOFEdNqRfNowUtl2D2wAMyCpDwf3fWUi56loHXZN-jmXxCg1qytS3tFFQCOXFq1S-RQaCIT9eDjiGwpE4irxtFXq" style=""/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent"></div>
+<div class="absolute bottom-6 left-6 text-white">
+<h1 class="font-headline text-3xl font-extrabold tracking-tight" style="">Yellowstone Adventure</h1>
+<p class="font-body text-sm opacity-90" style="">Aug 12 — Aug 18, 2024</p>
+</div>
+</div>
+<!-- Collaborators -->
+<div class="flex items-center justify-between bg-surface-container-low p-4 rounded-xl">
+<div class="flex -space-x-3">
+<img alt="Sarah" class="w-10 h-10 rounded-full border-2 border-surface" data-alt="cheerful young woman smiling in soft daylight portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgG_RtPM8JMoCBsYlDwggblvPt5CC8VpSI7JsrkNR3LSPVe_CJNpAGWC74MjGqoK9X1CKGWBXZ-FFGVbnDTOy2uCeBArxgOdp412wN3VBD73Tn3KIc7inSyveA4D4qyr0LVr32x3HElNjMuyeNa-V9RAbGwMXE6ZNXZ8qAEOwmgLRy48s0_cK_uUlcwNU98OuOvC674As26XvJj1ZiwrSuq8XmjlGJQnlepvcKvbIzLv3g5-8IGFEHJ2373xUBtaOQdOoJHiEgJTYY" style=""/>
+<img alt="Marc" class="w-10 h-10 rounded-full border-2 border-surface" data-alt="mature man with beard wearing glasses in professional studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-lt0fMb7UnMt7SC-xRLGf1U82XWswenc3yf9XVho51Pu7w-NssN1kh5HGCsLU6kJbv-QuhjyQ-IWp3rrCjJdi8_pLOK-HqQJcfogZ1xwcK6OG8Nirk5Qg9EjNkpYwnNNbHbneOhVZxpBAwDfe1qWcp89R5LFtLysRV3tI493rRwsWGdYjwxZjl8lGPbBj5fMZkfdg-Jvk0pzCIk4y6aneWttBdTtdqA8UCrOFM3gDHOQgFDyxfsTNn8O40u5G1G87p8S85K8zVxAn" style=""/>
+<img alt="David" class="w-10 h-10 rounded-full border-2 border-surface" data-alt="friendly young man in casual attire smiling outdoors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCykA55_DpgxoDS7gSglZLeItNUKx6QiMpmuTa_ksCfk0UmUmnnPuQNJlSqkeNxnhDnRQIZ8k9v_oIx3sxXw28aTkrNc2E8Vw_RSJOi5IuEwFBPUoYMoi8iTr6RfEGy-XXQvqL7oYlbQazBIab1nU-WqcbbA30P5ag8TPZs04ZJVXCXRFWzUIXrb0-S2wWL9Q8loB-17-4x0o-auvCNDVCPs-q1lBf_tmEtmQgB2rrWJqIxhuHj_RXkJ2QeGHLjWfz7_Og9P_VV9DwD" style=""/>
+<div class="w-10 h-10 rounded-full border-2 border-surface bg-primary-container text-white flex items-center justify-center text-xs font-bold" style="">+2</div>
+</div>
+<button class="text-primary font-semibold text-sm flex items-center gap-1" style="">
+<span class="material-symbols-outlined text-lg" style="">person_add</span>
+                    Invite
+                </button>
+</div>
+</section>
+<!-- Expense Summary -->
+<section class="mb-12 grid grid-cols-2 gap-4">
+<div class="bg-primary-container text-white p-5 rounded-[1.5rem] shadow-sm">
+<p class="text-[10px] uppercase tracking-widest font-bold opacity-80 mb-1" style="">Total Budget</p>
+<p class="text-2xl font-headline font-extrabold" style="">$1,200</p>
+</div>
+<div class="bg-secondary-container text-on-secondary-container p-5 rounded-[1.5rem] shadow-sm">
+<p class="text-[10px] uppercase tracking-widest font-bold opacity-80 mb-1" style="">Your Share</p>
+<p class="text-2xl font-headline font-extrabold" style="">$300</p>
+</div>
+</section>
+<!-- Itinerary Timeline -->
+<section class="space-y-10 relative">
+<!-- Timeline Road Thread -->
+<div class="absolute left-[19px] top-4 bottom-4 w-1 bg-primary-fixed rounded-full opacity-40"></div>
+<!-- Day 1 -->
+<div class="relative">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white z-10 shadow-lg">
+<span class="font-headline font-bold" style="">1</span>
+</div>
+<h2 class="font-headline text-xl text-primary font-bold" style="">Day 1: Arrival</h2>
+</div>
+<div class="ml-12 space-y-6">
+<!-- Event Card -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border-l-4 border-primary">
+<div class="flex justify-between items-start mb-2">
+<span class="text-xs font-bold text-primary px-2 py-1 bg-primary-fixed/30 rounded-full" style="">10:00 AM</span>
+<span class="material-symbols-outlined text-outline" style="">hotel</span>
+</div>
+<h3 class="font-headline font-bold text-on-surface" style="">Check-in at Pine Lodge</h3>
+<p class="text-sm text-on-surface-variant" style="">Central Park Entrance</p>
+</div>
+<!-- Event Card -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm">
+<div class="flex justify-between items-start mb-2">
+<span class="text-xs font-bold text-on-surface-variant px-2 py-1 bg-surface-container-high rounded-full" style="">1:00 PM</span>
+<span class="material-symbols-outlined text-outline" style="">hiking</span>
+</div>
+<h3 class="font-headline font-bold text-on-surface" style="">Hike to Old Faithful</h3>
+<p class="text-sm text-on-surface-variant" style="">Main Geyser Loop • 2.5 miles</p>
+</div>
+<!-- Proposed Activity Card Moved Here -->
+<div class="bg-surface-container-lowest p-5 rounded-3xl shadow-sm border border-outline-variant/20 relative overflow-hidden">
+<div class="absolute top-4 right-4 bg-tertiary-container text-tertiary-fixed px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase" style="">
+        Proposed
+      </div>
+<div class="flex items-start gap-4 mb-4">
+<div class="w-12 h-12 rounded-2xl bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined" style="">kayaking</span>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-0.5">
+<span class="text-xs font-bold text-primary px-2 py-0.5 bg-primary-fixed/30 rounded-full" style="">4:00 PM</span>
+</div>
+<h3 class="font-headline font-bold text-lg text-on-surface" style="">White Water Rafting</h3>
+<p class="text-sm text-on-surface-variant italic" style="">Snake River Canyon • 4 hours</p>
+</div>
+</div>
+<div class="space-y-4 pt-4 border-t border-outline-variant/10">
+<p class="text-xs font-bold text-primary uppercase tracking-widest" style="">VOTE: Should we do this?</p>
+<div class="grid grid-cols-1 gap-3">
+<button class="flex items-center justify-between w-full p-4 rounded-2xl bg-primary text-white font-bold text-sm shadow-md active:scale-[0.98] transition-transform" style="">
+<span class="" style="">Count me in!</span>
+<div class="flex items-center gap-2">
+<div class="flex -space-x-2">
+<img alt="User" class="w-6 h-6 rounded-full border border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgG_RtPM8JMoCBsYlDwggblvPt5CC8VpSI7JsrkNR3LSPVe_CJNpAGWC74MjGqoK9X1CKGWBXZ-FFGVbnDTOy2uCeBArxgOdp412wN3VBD73Tn3KIc7inSyveA4D4qyr0LVr32x3HElNjMuyeNa-V9RAbGwMXE6ZNXZ8qAEOwmgLRy48s0_cK_uUlcwNU98OuOvC674As26XvJj1ZiwrSuq8XmjlGJQnlepvcKvbIzLv3g5-8IGFEHJ2373xUBtaOQdOoJHiEgJTYY" style=""/>
+<img alt="User" class="w-6 h-6 rounded-full border border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-lt0fMb7UnMt7SC-xRLGf1U82XWswenc3yf9XVho51Pu7w-NssN1kh5HGCsLU6kJbv-QuhjyQ-IWp3rrCjJdi8_pLOK-HqQJcfogZ1xwcK6OG8Nirk5Qg9EjNkpYwnNNbHbneOhVZxpBAwDfe1qWcp89R5LFtLysRV3tI493rRwsWGdYjwxZjl8lGPbBj5fMZkfdg-Jvk0pzCIk4y6aneWttBdTtdqA8UCrOFM3gDHOQgFDyxfsTNn8O40u5G1G87p8S85K8zVxAn" style=""/>
+<div class="w-6 h-6 rounded-full bg-primary-container border border-white/20 flex items-center justify-center text-[8px] font-bold" style="">+1</div>
+</div>
+<span class="ml-1" style="">3</span>
+</div>
+</button>
+<button class="flex items-center justify-between w-full p-4 rounded-2xl bg-surface-container text-on-surface-variant font-semibold text-sm border border-outline-variant/30 active:scale-[0.98] transition-transform" style="">
+<span class="" style="">Not worth it.</span>
+<div class="flex items-center gap-2">
+<img alt="User" class="w-6 h-6 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCykA55_DpgxoDS7gSglZLeItNUKx6QiMpmuTa_ksCfk0UmUmnnPuQNJlSqkeNxnhDnRQIZ8k9v_oIx3sxXw28aTkrNc2E8Vw_RSJOi5IuEwFBPUoYMoi8iTr6RfEGy-XXQvqL7oYlbQazBIab1nU-WqcbbA30P5ag8TPZs04ZJVXCXRFWzUIXrb0-S2wWL9Q8loB-17-4x0o-auvCNDVCPs-q1lBf_tmEtmQgB2rrWJqIxhuHj_RXkJ2QeGHLjWfz7_Og9P_VV9DwD" style=""/>
+<span class="ml-1" style="">1</span>
+</div>
+</button>
+</div>
+<div class="relative w-full h-1.5 bg-surface-container rounded-full overflow-hidden mt-4">
+<div class="absolute left-0 top-0 h-full bg-primary rounded-full" style="width: 75%"></div>
+</div>
+<p class="text-[10px] text-on-surface-variant/70 text-right font-medium" style="">75% Consensus</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Day 2 -->
+<div class="relative">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white z-10 shadow-lg">
+<span class="font-headline font-bold" style="">2</span>
+</div>
+<h2 class="font-headline text-xl text-primary font-bold" style="">Day 2: Exploration</h2>
+</div>
+<div class="ml-12 space-y-6">
+<!-- Event Card -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm">
+<div class="flex justify-between items-start mb-2">
+<span class="text-xs font-bold text-on-surface-variant px-2 py-1 bg-surface-container-high rounded-full" style="">9:00 AM</span>
+<span class="material-symbols-outlined text-outline" style="">restaurant</span>
+</div>
+<h3 class="font-headline font-bold text-on-surface" style="">Breakfast at Bear Cafe</h3>
+<p class="text-sm text-on-surface-variant" style="">Recommended: Wild Berry Pancakes</p>
+</div>
+<!-- Conflict Alert Section -->
+<div class="bg-error-container/30 rounded-2xl overflow-hidden p-1">
+<div class="bg-white/80 backdrop-blur-md rounded-xl p-4 border border-error/10">
+<div class="flex items-center gap-2 text-error mb-3">
+<span class="material-symbols-outlined text-[18px]" style="">warning</span>
+<span class="text-[10px] font-bold uppercase tracking-wider" style="">Schedule Conflict</span>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between opacity-50">
+<div class="flex items-center gap-3">
+<div class="w-1 h-8 bg-error rounded-full"></div>
+<div>
+<p class="text-xs font-bold" style="">2:00 PM</p>
+<p class="text-sm" style="">Kayak Rental</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline" style="">kayaking</span>
+</div>
+<div class="flex items-center justify-between opacity-50">
+<div class="flex items-center gap-3">
+<div class="w-1 h-8 bg-error rounded-full"></div>
+<div>
+<p class="text-xs font-bold" style="">3:30 PM</p>
+<p class="text-sm" style="">Photography Class</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline" style="">photo_camera</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB -->
+<button class="fixed right-6 bottom-24 w-14 h-14 bg-gradient-to-br from-[#154212] to-[#2d5a27] text-white rounded-2xl shadow-[0_12px_24px_rgba(21,66,18,0.3)] flex items-center justify-center active:scale-95 transition-transform z-40" style="">
+<span class="material-symbols-outlined" style="">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-[#f8faf8]/80 dark:bg-[#191c1b]/80 backdrop-blur-xl shadow-[0_-8px_32px_rgba(25,28,27,0.06)]">
+<div class="flex justify-around items-center w-full">
+<a class="flex-1 flex flex-col items-center justify-center py-3" href="#" style="">
+<div class="bg-gradient-to-br from-[#154212] to-[#2d5a27] text-white rounded-2xl px-5 py-2 flex flex-col items-center active:scale-90 duration-300 ease-out">
+<span class="material-symbols-outlined mb-0.5" style="">explore</span>
+<span class="font-['Be_Vietnam_Pro'] text-[10px] font-bold tracking-wide uppercase" style="">Itinerary</span>
+</div>
+</a>
+<a class="flex-1 flex flex-col items-center justify-center py-3 text-[#42493e] dark:text-[#c2c9bb] transition-all active:scale-90 duration-300 ease-out" href="#" style="">
+<span class="material-symbols-outlined mb-1" style="">map</span>
+<span class="font-['Be_Vietnam_Pro'] text-[10px] font-medium tracking-wide uppercase" style="">Map</span>
+</a>
+<a class="flex-1 flex flex-col items-center justify-center py-3 text-[#42493e] dark:text-[#c2c9bb] transition-all active:scale-90 duration-300 ease-out" href="#" style="">
+<span class="material-symbols-outlined mb-1" style="">payments</span>
+<span class="font-['Be_Vietnam_Pro'] text-[10px] font-medium tracking-wide uppercase" style="">Expenses</span>
+</a>
+<a class="flex-1 flex flex-col items-center justify-center py-3 text-[#42493e] dark:text-[#c2c9bb] transition-all active:scale-90 duration-300 ease-out" href="#" style="">
+<span class="material-symbols-outlined mb-1" style="">group</span>
+<span class="font-['Be_Vietnam_Pro'] text-[10px] font-medium tracking-wide uppercase" style="">Collaborate</span>
+</a>
+</div>
+</nav>
+</body></html>
