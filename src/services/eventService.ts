@@ -88,32 +88,41 @@ export const reorderEvents = async (
 
 export const subscribeToTripEvents = (
   tripId: string,
-  callback: (events: TripEvent[]) => void
+  callback: (events: TripEvent[]) => void,
+  onError?: (error: Error) => void
 ): (() => void) => {
   const q = query(getEventsCollection(tripId), orderBy('order', 'asc'));
 
-  return onSnapshot(q, (snapshot) => {
-    const events: TripEvent[] = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        type: data.type,
-        name: data.name,
-        location: data.location ?? undefined,
-        cost: data.cost ?? undefined,
-        startDateTime: data.startDateTime,
-        endDateTime: data.endDateTime ?? undefined,
-        timezone: data.timezone,
-        transportationType: data.transportationType ?? undefined,
-        order: data.order,
-        createdAt: data.createdAt instanceof Timestamp
-          ? data.createdAt.toDate().toISOString()
-          : data.createdAt,
-        updatedAt: data.updatedAt instanceof Timestamp
-          ? data.updatedAt.toDate().toISOString()
-          : data.updatedAt,
-      };
-    });
-    callback(events);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const events: TripEvent[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          type: data.type,
+          name: data.name,
+          location: data.location ?? undefined,
+          cost: data.cost ?? undefined,
+          startDateTime: data.startDateTime,
+          endDateTime: data.endDateTime ?? undefined,
+          timezone: data.timezone,
+          transportationType: data.transportationType ?? undefined,
+          order: data.order,
+          createdAt: data.createdAt instanceof Timestamp
+            ? data.createdAt.toDate().toISOString()
+            : data.createdAt,
+          updatedAt: data.updatedAt instanceof Timestamp
+            ? data.updatedAt.toDate().toISOString()
+            : data.updatedAt,
+        };
+      });
+      callback(events);
+    },
+    (error) => {
+      if (onError) {
+        onError(error);
+      }
+    }
+  );
 };

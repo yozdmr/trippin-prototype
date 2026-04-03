@@ -26,6 +26,10 @@ export const useTrips = (): UseTripsReturn => {
     try {
       const unsubscribe = subscribeToUserTrips(user.id, (trips) => {
         setTrips(trips);
+        setError(null);
+        setLoading(false);
+      }, (err) => {
+        setError(err instanceof Error ? err : new Error('Failed to load trips'));
         setLoading(false);
       });
       return () => unsubscribe();

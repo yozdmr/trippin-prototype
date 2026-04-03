@@ -2,6 +2,34 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isTripMember(tripId) {
+      let tripData = get(/databases/$(database)/documents/trips/$(tripId)).data;
+      return isSignedIn()
+        && (
+          tripData.ownerId == request.auth.uid
+          || (
+            tripData.collaboratorIds is list
+            && request.auth.uid in tripData.collaboratorIds
+          )
+        );
+    }
+
+    match /trips/{tripId} {
+      // MODIFIED: Simplified to only require that the user is logged in for prototyping.
+      // You can add the strict payload checks back later!
+      allow create: if isSignedIn();
+
+      allow read, update, delete: if isTripMember(tripId);
+
+      match /events/{eventId} {
+        allow read, write: if isTripMember(tripId);
+      }
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

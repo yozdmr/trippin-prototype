@@ -10,21 +10,24 @@ import { TripFormModal } from './TripFormModal';
 
 export const HomePage = () => {
   const { user } = useAuth();
-  const { trips, loading } = useTrips();
+  const { trips, loading, error } = useTrips();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
 
   const handleCreateTrip = async (formData: TripFormData) => {
     if (!user) return;
 
     try {
+      setCreateError(null);
       setCreating(true);
       const tripId = await createTrip(formData, user.id);
       setShowModal(false);
       navigate(`/trip/${tripId}`);
     } catch (error) {
       console.error('Failed to create trip:', error);
+      setCreateError('Could not create trip. Check Firestore rules and try again.');
     } finally {
       setCreating(false);
     }
@@ -66,6 +69,18 @@ export const HomePage = () => {
       </header>
 
       <main className="max-w-4xl mx-auto p-4">
+        {error && (
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-red-700">
+            Failed to load trips. Ensure Firestore rules are published for authenticated users.
+          </div>
+        )}
+
+        {createError && (
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-red-700">
+            {createError}
+          </div>
+        )}
+
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold text-emerald-800">Your Trips</h2>
           <button

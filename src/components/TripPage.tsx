@@ -16,7 +16,7 @@ export const TripPage = () => {
   const { tripId } = useParams<{ tripId: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { events, loading: eventsLoading } = useEvents(tripId);
+  const { events, loading: eventsLoading, error: eventsError } = useEvents(tripId);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [tripLoading, setTripLoading] = useState(true);
   const [showEventModal, setShowEventModal] = useState(false);
@@ -24,34 +24,45 @@ export const TripPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [tripName, setTripName] = useState('');
+  const [tripError, setTripError] = useState<string | null>(null);
+  const [eventActionError, setEventActionError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!tripId) return;
 
     const tripRef = doc(db, 'trips', tripId);
-    const unsubscribe = onSnapshot(tripRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.data();
-        setTrip({
-          id: snapshot.id,
-          name: data.name,
-          destination: data.destination,
-          startDate: data.startDate,
-          endDate: data.endDate,
-          imageUrl: data.imageUrl ?? undefined,
-          ownerId: data.ownerId,
-          collaboratorIds: data.collaboratorIds ?? [],
-          createdAt: data.createdAt instanceof Timestamp
-            ? data.createdAt.toDate().toISOString()
-            : data.createdAt,
-          updatedAt: data.updatedAt instanceof Timestamp
-            ? data.updatedAt.toDate().toISOString()
-            : data.updatedAt,
-        });
-        setTripName(data.name);
+    const unsubscribe = onSnapshot(
+      tripRef,
+      (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          setTrip({
+            id: snapshot.id,
+            name: data.name,
+            destination: data.destination,
+            startDate: data.startDate,
+            endDate: data.endDate,
+            imageUrl: data.imageUrl ?? undefined,
+            ownerId: data.ownerId,
+            collaboratorIds: data.collaboratorIds ?? [],
+            createdAt: data.createdAt instanceof Timestamp
+              ? data.createdAt.toDate().toISOString()
+              : data.createdAt,
+            updatedAt: data.updatedAt instanceof Timestamp
+              ? data.updatedAt.toDate().toISOString()
+              : data.updatedAt,
+          });
+          setTripName(data.name);
+          setTripError(null);
+        }
+        setTripLoading(false);
+      },
+      (error) => {
+        console.error('Failed to load trip:', error);
+        setTripError('Could not load trip. Check Firestore rules and sign-in status.');
+        setTripLoading(false);
       }
-      setTripLoading(false);
-    });
+    );
 
     return () => unsubscribe();
   }, [tripId]);
@@ -60,12 +71,14 @@ export const TripPage = () => {
     if (!tripId) return;
 
     try {
+      setEventActionError(null);
       setIsSubmitting(true);
       const order = events.length;
       await createEvent(tripId, eventData, order);
       setShowEventModal(false);
     } catch (error) {
       console.error('Failed to create event:', error);
+      setEventActionError('Could not add event. Check Firestore rules and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -75,11 +88,13 @@ export const TripPage = () => {
     if (!tripId || !editingEvent) return;
 
     try {
+      setEventActionError(null);
       setIsSubmitting(true);
       await updateEvent(tripId, editingEvent.id, eventData);
       setEditingEvent(null);
     } catch (error) {
       console.error('Failed to update event:', error);
+      setEventActionError('Could not update event. Check Firestore rules and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -89,10 +104,12 @@ export const TripPage = () => {
     if (!tripId) return;
 
     try {
+      setEventActionError(null);
       await deleteEvent(tripId, eventId);
       setEditingEvent(null);
     } catch (error) {
       console.error('Failed to delete event:', error);
+      setEventActionError('Could not delete event. Check Firestore rules and try again.');
     }
   };
 
@@ -136,6 +153,22 @@ export const TripPage = () => {
     return (
       <div className="min-h-screen bg-emerald-50 flex items-center justify-center">
         <div className="text-emerald-700 text-lg">Loading trip...</div>
+      </div>
+    );
+  }
+
+  if (tripError) {
+    return (
+      <div className="min-h-screen bg-emerald-50 flex flex-col items-center justify-center px-4">
+        <div className="max-w-md w-full rounded-lg border border-red-200 bg-red-50 p-4 text-red-700 text-center">
+          {tripError}
+        </div>
+        <button
+          onClick={() => navigate('/')}
+          className="mt-4 text-emerald-600 hover:text-emerald-700"
+        >
+          Back to Home
+        </button>
       </div>
     );
   }
@@ -233,6 +266,18 @@ export const TripPage = () => {
       </header>
 
       <main className="flex-1 relative pb-24">
+        {eventsError && (
+          <div className="mx-4 mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-red-700">
+            Failed to load events. Ensure you have permission for this trip.
+          </div>
+        )}
+
+        {eventActionError && (
+          <div className="mx-4 mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-red-700">
+            {eventActionError}
+          </div>
+        )}
+
         {eventsLoading ? (
           <div className="text-center py-12 text-emerald-700">
             Loading events...

@@ -24,6 +24,10 @@ export const useEvents = (tripId: string | undefined): UseEventsReturn => {
     try {
       const unsubscribe = subscribeToTripEvents(tripId, (events) => {
         setEvents(events);
+        setError(null);
+        setLoading(false);
+      }, (err) => {
+        setError(err instanceof Error ? err : new Error('Failed to load events'));
         setLoading(false);
       });
       return () => unsubscribe();

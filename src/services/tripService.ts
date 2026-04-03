@@ -63,33 +63,42 @@ export const deleteTrip = async (tripId: string): Promise<void> => {
 
 export const subscribeToUserTrips = (
   userId: string,
-  callback: (trips: Trip[]) => void
+  callback: (trips: Trip[]) => void,
+  onError?: (error: Error) => void
 ): (() => void) => {
   const q = query(
     collection(db, TRIPS_COLLECTION),
     where('ownerId', '==', userId)
   );
 
-  return onSnapshot(q, (snapshot) => {
-    const trips: Trip[] = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        name: data.name,
-        destination: data.destination,
-        startDate: data.startDate,
-        endDate: data.endDate,
-        imageUrl: data.imageUrl ?? undefined,
-        ownerId: data.ownerId,
-        collaboratorIds: data.collaboratorIds ?? [],
-        createdAt: data.createdAt instanceof Timestamp
-          ? data.createdAt.toDate().toISOString()
-          : data.createdAt,
-        updatedAt: data.updatedAt instanceof Timestamp
-          ? data.updatedAt.toDate().toISOString()
-          : data.updatedAt,
-      };
-    });
-    callback(trips);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const trips: Trip[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          name: data.name,
+          destination: data.destination,
+          startDate: data.startDate,
+          endDate: data.endDate,
+          imageUrl: data.imageUrl ?? undefined,
+          ownerId: data.ownerId,
+          collaboratorIds: data.collaboratorIds ?? [],
+          createdAt: data.createdAt instanceof Timestamp
+            ? data.createdAt.toDate().toISOString()
+            : data.createdAt,
+          updatedAt: data.updatedAt instanceof Timestamp
+            ? data.updatedAt.toDate().toISOString()
+            : data.updatedAt,
+        };
+      });
+      callback(trips);
+    },
+    (error) => {
+      if (onError) {
+        onError(error);
+      }
+    }
+  );
 };
