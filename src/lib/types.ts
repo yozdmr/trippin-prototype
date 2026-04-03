@@ -1,0 +1,23 @@
+export type EventType = 'Hotel' | 'Restaurant' | 'Activity'
+
+export type TripEvent = {
+  id: string
+  type: EventType
+  name: string
+  cost: number
+  location: string
+  startMs: number
+  durationMin: number
+  timeZone: string
+}
+
+export type TripState = {
+  tripName: string
+  budget: number
+  collaboratorCount: number
+  bannerUrl: string | null
+  events: TripEvent[]
+}
+
+export const TRIP_DOC_ID = 'default'
+export const LOCAL_STORAGE_KEY = 'trippin-trip-v1'
