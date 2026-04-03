@@ -2,7 +2,7 @@ import { initializeApp, type FirebaseApp } from 'firebase/app'
 import { getFirestore, type Firestore } from 'firebase/firestore'
 import { getStorage, type FirebaseStorage } from 'firebase/storage'
 
-export type FirebaseClients = {
+export interface FirebaseClients {
   app: FirebaseApp
   db: Firestore
   storage: FirebaseStorage

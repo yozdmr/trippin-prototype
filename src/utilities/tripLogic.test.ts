@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { TripEvent, TripState } from './types'
+import type { TripEvent, TripState } from '../types/trip'
 import {
   addEventToTrip,
   budgetSpendColor,

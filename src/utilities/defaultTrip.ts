@@ -1,4 +1,4 @@
-import type { TripState } from './types'
+import type { TripState } from '../types/trip'
 
 export const DEFAULT_TRIP: TripState = {
   tripName: 'My trip',

@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+@layer components {
+  .trip-banner-bg {
+    background-image: var(--trip-banner-image, none);
+  }
+
+  .text-budget-spend {
+    color: var(--trip-spend-color, rgb(22, 163, 74));
+  }
+}
+
 @theme {
   --animate-logo-spin: logo-spin infinite 20s linear;
 

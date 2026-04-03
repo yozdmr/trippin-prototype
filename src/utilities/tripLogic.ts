@@ -1,4 +1,4 @@
-import type { EventType, TripEvent, TripState } from './types'
+import type { EventType, TripEvent, TripState } from '../types/trip'
 
 export function defaultDurationForType(type: EventType): number {
   switch (type) {

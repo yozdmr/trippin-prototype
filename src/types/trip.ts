@@ -1,6 +1,8 @@
 export type EventType = 'Hotel' | 'Restaurant' | 'Activity'
 
-export type TripEvent = {
+export const EVENT_TYPE_OPTIONS: readonly EventType[] = ['Hotel', 'Restaurant', 'Activity']
+
+export interface TripEvent {
   id: string
   type: EventType
   name: string
@@ -11,7 +13,7 @@ export type TripEvent = {
   timeZone: string
 }
 
-export type TripState = {
+export interface TripState {
   tripName: string
   budget: number
   collaboratorCount: number

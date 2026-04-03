@@ -35,3 +35,7 @@ export const COMMON_TIMEZONES = [
   'Australia/Sydney',
   'UTC',
 ] as const
+
+export function formatTimeInZone(startMs: number, timeZone: string): string {
+  return DateTime.fromMillis(startMs, { zone: timeZone }).toFormat('h:mm a ZZZZ')
+}
