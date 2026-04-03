@@ -12,41 +12,39 @@ An efficient way to collaborate with friends to organize, plan, schedule and fin
 
 # Key features
 
-Simple mobile-friendly one-screen design with the app name at the top, and below it:
-  - large countdown timer, defaulting to 10 minutes, but adjustable at the start of each session,
-  - a single start/pause buttonm
-  - the team members, shuffled at the start of each session, with the first name highlighted
+Simple mobile-friendly one-screen design with the app name and user profile icon at the top, and below it:
+  - A vertical sequence of scheduled events, with the most recent events at the top and latest events at the bottom
+  - A plus button in the bottom right that when clicked opens an event creation menu:
+    - Can specify the event type (Hotel, Restaurant, Activity), name, cost, location address (optional)
+    - Ensure the date and time can be selected (with timezone option)
 Simple operations:
-  - Tap a name to skip or include that team member in the rotation.
-  - Tap start to start the timer, tap again to pause it.
-  - When one minute is left, timer beeps and starts flashing.
-  - When time is up, timer sounds an alarm, resets time, rotates to the next team member, and waits for start.
-Recording-keeping:
-  - At end of each turn, the app logs to the console the current time, rotation duration setting, the driver, and the navigators.
+  - Name the trip at the top
+  - Add an image for the trip as a background header
+  - Click the plus icon to create a new event
+  - Edit icon on existing events to modify their fields
+  - Delete icon on existing events to remove events
 
 # Example scenario
 
 Here is an example session.
 
-- Alice, Bob, Cathy, and Dave are a team of developers.
-- Alice, Cathy, and Dave meet to do mob programming for 90 minutes.
+- Alice wants to go on a vacation.
 - Alice starts the app on her phone. 
-- It shows a countdown timer, set to 10 minutes, a start button, and a shuffled list of team member names with checkmarks.
-- The first name is highlighted. It happens to be Bob.
-- Alice taps Bob's nam because he is not there. The highlight moves to Dave.
-- Dave sits at the keyboard and starts the timer. He begins entering code suggested by the other team members. 
-- Pizza arrives, so Dave stops the timer and grabs a slice. After a few minutes, he starts the timer to continue his turn.
-- A beep at 9 minutes warns the team is almost time to rotate.
-- Whem time goes to zero, an alarm sounds. Dave stops. The highlight moves to Cathy
-- Cathy taps the start button to begin her turn.
+- It shows a homepage that asks for her initial destination, a vacation name, and a calendar where she can select the dates of her holiday.
+- When selected, this takes her to the main page. There is a vertical timeline in the middle of the page. The top of the screen shows her vacation name and a grey banner where an optional photo can be selected. The theme of the app is a forest green.
+- Alice taps on the big plus button in a circle on the bottom right of the screen. A small list appears above the button, providing options such as activity, meal, transportation, lodging.
+- An overlay popup appears that asks her to enter the name of the activity, the location, the cost, and the duration period.
+- After entering the information, the timeline now has one item. It appears as a cirlce on the timeline with a white box sticking out to the side. The timeline is now aligned on the left of the page.
+- As Alice adds more activities, the timeline starts to fill up.
+- Each circle can be moved up or down the timeline by dragging it along. Each box has an edit icon where the key information can be edited. There is a delete icon at the bottom of this popup.
+- When Alice clicks on the transportation button, there are two options: major transit and daily transit. Major transit takes her to a popup where she can enter relevant information for transport such as flights and long train rides. This appears at the time when they are taken, and are slightly larger boxes than regular activity boxes. Daily transit appears as smaller boxes, colored light blue, in between activities.
+- Meal items look the same as activity items, but are a different color/shade.
+- Lodging items are placed at the top of the stay, and are still visible via a small top banner as the user scrolls past it as long as they stay there.
 
 # Coding notes
 
-- Use setInterval() to implement the timer.
-- Use AudioContext to play sounds.
-- Define and import a MockAudioContext class for unit testing sounds. 
 
 # Testing notes
-- Define unit tests for skipping team members in the rotation.
-- Define unit tests for when Start and Stop should appear.
-- Define unit tests for when sounds should happen.
+- Define unit tests for creating new items in the timeline.
+- Define unit tests for editing items in the timeline.
+- Define unit tests for deleting items in the timeline.
