@@ -6,9 +6,10 @@ import './BudgetModal.css';
 interface BudgetModalProps {
   tripId: string;
   spent: number;
+  canEdit?: boolean;
 }
 
-const BudgetModal = ({ tripId, spent }: BudgetModalProps) => {
+const BudgetModal = ({ tripId, spent, canEdit = true }: BudgetModalProps) => {
   const { trip, updateBudget } = useTrip(tripId);
   const [inputValue, setInputValue] = useState(trip?.budget ?? 0);
   const [isBudgetOpen, setIsBudgetOpen] = useState(false);
@@ -37,20 +38,20 @@ const BudgetModal = ({ tripId, spent }: BudgetModalProps) => {
   return (
     <>
       <div className="budget-cards-row">
-        <button className={`budget-card ${overBudget ? 'budget-card--over' : 'budget-card--dark'}`} onClick={handleBudgetOpen}>
+        <button className={`budget-card ${overBudget ? 'budget-card--over' : 'budget-card--dark'}`} onClick={canEdit ? handleBudgetOpen : undefined} style={canEdit ? undefined : { cursor: 'default' }}>
           <div className="budget-card-text">
             <span className="budget-card-label">TOTAL BUDGET</span>
             <span className="budget-card-value">{fmt(spent)} <span className="budget-card-budget">({fmt(budget)})</span></span>
           </div>
-          <ChevronsUpDownIcon size={22} />
+          {canEdit && <ChevronsUpDownIcon size={22} />}
         </button>
 
-        <button className="budget-card budget-card--light" onClick={handleShareOpen}>
+        <button className="budget-card budget-card--light" onClick={canEdit ? handleShareOpen : undefined} style={canEdit ? undefined : { cursor: 'default' }}>
           <div className="budget-card-text">
             <span className="budget-card-label">YOUR SHARE</span>
             <span className="budget-card-value">{fmt(budget)}</span>
           </div>
-          <PencilIcon size={22} />
+          {canEdit && <PencilIcon size={22} />}
         </button>
       </div>
 

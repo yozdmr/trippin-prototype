@@ -2,11 +2,24 @@ import { useState, useEffect, useRef } from 'react';
 import { doc, getDoc, collection, query, where, getDocs, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { db } from '../services/firebase';
 import { AppUser } from '../types/auth';
+import { TripRole } from '../types/trip';
 import { UserIcon } from '../services/svgIcons';
 import './TripShareBar.css';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_CARD_AVATARS = 3;
+
+const ROLE_LABELS: Record<TripRole, string> = {
+  admin: 'Admin',
+  editor: 'Editor',
+  viewer: 'Viewer',
+};
+
+const ROLE_DESCRIPTIONS: Record<TripRole, string> = {
+  admin: 'Full access — edit, delete, and manage members',
+  editor: 'Can edit days, events, and budget',
+  viewer: 'View-only — can also invite others',
+};
 
 interface EmailPill {
   id: string;
@@ -14,6 +27,7 @@ interface EmailPill {
   isValidEmail: boolean;
   user: AppUser | null;
   resolving: boolean;
+  role: TripRole;
 }
 
 interface RemovePopover {
@@ -26,10 +40,11 @@ interface TripShareBarProps {
   shared: string[];
   tripId: string;
   isOwner: boolean;
+  canManageMembers?: boolean;
   variant?: 'banner' | 'card';
 }
 
-const TripShareBar = ({ shared, tripId, isOwner, variant = 'banner' }: TripShareBarProps) => {
+const TripShareBar = ({ shared, tripId, isOwner, canManageMembers = isOwner, variant = 'banner' }: TripShareBarProps) => {
   const [sharedUsers, setSharedUsers] = useState<AppUser[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -57,11 +72,11 @@ const TripShareBar = ({ shared, tripId, isOwner, variant = 'banner' }: TripShare
     const id = `${trimmed}-${Date.now()}`;
 
     if (!isValidEmail) {
-      setPills(prev => [...prev, { id, email: trimmed, isValidEmail: false, user: null, resolving: false }]);
+      setPills(prev => [...prev, { id, email: trimmed, isValidEmail: false, user: null, resolving: false, role: 'viewer' }]);
       return;
     }
 
-    setPills(prev => [...prev, { id, email: trimmed, isValidEmail: true, user: null, resolving: true }]);
+    setPills(prev => [...prev, { id, email: trimmed, isValidEmail: true, user: null, resolving: true, role: 'viewer' }]);
     const user = await lookupUserByEmail(trimmed);
     setPills(prev => prev.map(p => p.id === id ? { ...p, user, resolving: false } : p));
   };
@@ -79,12 +94,18 @@ const TripShareBar = ({ shared, tripId, isOwner, variant = 'banner' }: TripShare
   };
 
   const handleShare = async () => {
-    const newUids = pills
-      .filter(p => p.isValidEmail && p.user && !shared.includes(p.user.uid))
-      .map(p => p.user!.uid);
+    const validPills = pills.filter(p => p.isValidEmail && p.user && !shared.includes(p.user!.uid));
 
-    if (newUids.length > 0) {
-      await updateDoc(doc(db, 'trips', tripId), { shared: arrayUnion(...newUids) });
+    if (validPills.length > 0) {
+      const newUids = validPills.map(p => p.user!.uid);
+      const roleUpdates: Record<string, TripRole> = {};
+      for (const p of validPills) {
+        roleUpdates[`roles.${p.user!.uid}`] = p.role;
+      }
+      await updateDoc(doc(db, 'trips', tripId), {
+        shared: arrayUnion(...newUids),
+        ...roleUpdates,
+      });
     }
 
     closeModal();
@@ -134,7 +155,7 @@ const TripShareBar = ({ shared, tripId, isOwner, variant = 'banner' }: TripShare
     <div className="trip-share-bar">
       <div className="trip-share-bar-users">
         {sharedUsers.map((user, i) => (
-          isOwner ? (
+          canManageMembers ? (
             renderAvatarBtn(user, i, { marginLeft: i === 0 ? 0 : -10 })
           ) : (
             <span key={user.uid} style={{ marginLeft: i === 0 ? 0 : -10, zIndex: sharedUsers.length - i + 1, display: 'contents' }}>
@@ -142,21 +163,20 @@ const TripShareBar = ({ shared, tripId, isOwner, variant = 'banner' }: TripShare
             </span>
           )
         ))}
-        {isOwner && (
-          <button
-            className="trip-share-bar-add-btn"
-            aria-label="Add user"
-            onClick={() => setShowModal(true)}
-          >
-            {shared.length === 0 && <span className="trip-share-bar-add-label">Add Friends</span>}
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M2 21a8 8 0 0 1 13.292-6"/>
-              <circle cx="10" cy="8" r="5"/>
-              <path d="M19 16v6"/>
-              <path d="M22 19h-6"/>
-            </svg>
-          </button>
-        )}
+        {/* Any user can invite (viewer+), but only canManageMembers can remove */}
+        <button
+          className="trip-share-bar-add-btn"
+          aria-label="Add user"
+          onClick={() => setShowModal(true)}
+        >
+          {shared.length === 0 && <span className="trip-share-bar-add-label">Add Friends</span>}
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M2 21a8 8 0 0 1 13.292-6"/>
+            <circle cx="10" cy="8" r="5"/>
+            <path d="M19 16v6"/>
+            <path d="M22 19h-6"/>
+          </svg>
+        </button>
       </div>
 
       {shared.length !== 0 && (
@@ -186,7 +206,7 @@ const TripShareBar = ({ shared, tripId, isOwner, variant = 'banner' }: TripShare
       )}
       <div className="trip-share-bar-card-avatars">
         {visibleUsers.map((user, i) => (
-          isOwner ? (
+          canManageMembers ? (
             renderAvatarBtn(user, i, { marginLeft: i === 0 ? 0 : -10 })
           ) : (
             <span key={user.uid} style={{ marginLeft: i === 0 ? 0 : -10, zIndex: sharedUsers.length - i + 1, display: 'contents' }}>
@@ -201,21 +221,19 @@ const TripShareBar = ({ shared, tripId, isOwner, variant = 'banner' }: TripShare
         )}
       </div>
 
-      {isOwner && (
-        <button
-          className="trip-share-bar-card-invite-btn"
-          onClick={() => setShowModal(true)}
-          aria-label="Invite friends"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M2 21a8 8 0 0 1 13.292-6"/>
-            <circle cx="10" cy="8" r="5"/>
-            <path d="M19 16v6"/>
-            <path d="M22 19h-6"/>
-          </svg>
-          <span>Invite</span>
-        </button>
-      )}
+      <button
+        className="trip-share-bar-card-invite-btn"
+        onClick={() => setShowModal(true)}
+        aria-label="Invite friends"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 21a8 8 0 0 1 13.292-6"/>
+          <circle cx="10" cy="8" r="5"/>
+          <path d="M19 16v6"/>
+          <path d="M22 19h-6"/>
+        </svg>
+        <span>Invite</span>
+      </button>
     </div>
   );
 
@@ -287,6 +305,44 @@ const TripShareBar = ({ shared, tripId, isOwner, variant = 'banner' }: TripShare
                 autoFocus
               />
             </div>
+
+            {pills.filter(p => p.isValidEmail && p.user).length > 0 && (
+              <div className="share-modal-roles">
+                <p className="share-modal-roles-heading">Set permissions</p>
+                {pills.filter(p => p.isValidEmail && p.user).map(pill => (
+                  <div key={pill.id} className="share-modal-role-row">
+                    <div className="share-modal-role-user">
+                      {pill.user?.photoURL ? (
+                        <img src={pill.user.photoURL} alt={pill.user.firstName} className="share-modal-role-avatar" />
+                      ) : (
+                        <div className="share-modal-role-avatar share-modal-pill-avatar-default">
+                          <UserIcon size={12} />
+                        </div>
+                      )}
+                      <span className="share-modal-role-name">
+                        {`${pill.user!.firstName} ${pill.user!.lastName}`.trim()}
+                      </span>
+                    </div>
+                    <div className="share-modal-role-picker">
+                      {(['admin', 'editor', 'viewer'] as TripRole[]).map(role => (
+                        <button
+                          key={role}
+                          type="button"
+                          className={`share-modal-role-btn${pill.role === role ? ' share-modal-role-btn-active' : ''}`}
+                          onClick={e => {
+                            e.stopPropagation();
+                            setPills(prev => prev.map(p => p.id === pill.id ? { ...p, role } : p));
+                          }}
+                        >
+                          {ROLE_LABELS[role]}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="share-modal-role-desc">{ROLE_DESCRIPTIONS[pill.role]}</p>
+                  </div>
+                ))}
+              </div>
+            )}
 
             <button className="share-modal-submit" onClick={handleShare}>
               Share

@@ -9,6 +9,7 @@ import BudgetModal from '../components/BudgetModal';
 import TripShareBar from '../components/TripShareBar';
 import { Event } from '../types/event';
 import { Day } from '../types/day';
+import { TripRole } from '../types/trip';
 import useTrip from '../hooks/useTrip';
 import useDays from '../hooks/useDays';
 import useItinerary from '../hooks/useItinerary';
@@ -145,6 +146,15 @@ const TripPage = () => {
     return noAccessView;
   }
 
+  // Compute the current user's effective role.
+  // Trip creator is always 'owner' (treated as admin+). Shared users fall back to 'viewer'.
+  const isOwner = appUser?.uid === trip.userId;
+  const userRole: TripRole | 'owner' = isOwner
+    ? 'owner'
+    : (trip.roles?.[appUser?.uid ?? ''] ?? 'viewer');
+  const canEdit = userRole === 'owner' || userRole === 'admin' || userRole === 'editor';
+  const canDelete = userRole === 'owner' || userRole === 'admin';
+
   return (
     <div className="home-wrapper">
       <div className="home-container">
@@ -157,26 +167,27 @@ const TripPage = () => {
               dateRange={formatDateRange(days)}
               tripId={id!}
               shared={trip.shared}
-              isOwner={appUser?.uid === trip.userId}
-              onChangeName={handleChangeName}
-              onChangeImage={handleChangeBannerImage}
-              onChangeStartDate={handleChangeStartDate}
-              onDelete={() => setShowDeleteConfirm(true)}
+              isOwner={isOwner}
+              onChangeName={canEdit ? handleChangeName : undefined}
+              onChangeImage={canEdit ? handleChangeBannerImage : undefined}
+              onChangeStartDate={canEdit ? handleChangeStartDate : undefined}
+              onDelete={canDelete ? () => setShowDeleteConfirm(true) : undefined}
             />
             <TripShareBar
               shared={trip.shared}
               tripId={id!}
-              isOwner={appUser?.uid === trip.userId}
+              isOwner={isOwner}
+              canManageMembers={canDelete}
               variant="card"
             />
-            <BudgetModal tripId={id!} spent={events.reduce((sum, e) => sum + (e.cost ?? 0), 0)} />
+            <BudgetModal tripId={id!} spent={events.reduce((sum, e) => sum + (e.cost ?? 0), 0)} canEdit={canEdit} />
             <ItineraryList
               days={daysWithEvents}
-              onAddDay={handleAddDay}
-              onUpdateDayLabel={handleUpdateDayLabel}
-              onDeleteDay={handleDeleteDay}
-              onAddEvent={(day) => setActiveDay({ id: day.id, date: day.date })}
-              onDeleteEvent={(tripId, dayId, eventId) => deleteEvent(tripId, dayId, eventId)}
+              onAddDay={canEdit ? handleAddDay : undefined}
+              onUpdateDayLabel={canEdit ? handleUpdateDayLabel : undefined}
+              onDeleteDay={canDelete ? handleDeleteDay : undefined}
+              onAddEvent={canEdit ? (day) => setActiveDay({ id: day.id, date: day.date }) : undefined}
+              onDeleteEvent={canDelete ? (tripId, dayId, eventId) => deleteEvent(tripId, dayId, eventId) : undefined}
             />
           </div>
         </main>

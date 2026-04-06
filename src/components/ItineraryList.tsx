@@ -6,9 +6,9 @@ import './ItineraryList.css';
 
 interface ItineraryListProps {
   days: Day[];
-  onAddDay: () => void;
-  onUpdateDayLabel: (dayId: string, label: string) => void;
-  onDeleteDay: (dayId: string) => void;
+  onAddDay?: () => void;
+  onUpdateDayLabel?: (dayId: string, label: string) => void;
+  onDeleteDay?: (dayId: string) => void;
   onAddEvent?: (day: Day) => void;
   onDeleteEvent?: (tripId: string, dayId: string, eventId: string) => void;
 }
@@ -25,7 +25,7 @@ const ItineraryList = ({ days, onAddDay, onUpdateDayLabel, onDeleteDay, onAddEve
 
   const commitEdit = (dayId: string) => {
     if (editValue.trim()) {
-      onUpdateDayLabel(dayId, editValue.trim());
+      onUpdateDayLabel?.(dayId, editValue.trim());
     }
     setEditingDay(null);
   };
@@ -73,31 +73,37 @@ const ItineraryList = ({ days, onAddDay, onUpdateDayLabel, onDeleteDay, onAddEve
 
                     {/* Right-aligned action buttons */}
                     <div className="day-actions">
-                      <button
-                        onClick={() => onAddEvent?.(day)}
-                        aria-label={`Add event to day ${index + 1}`}
-                        className="day-add-event-btn"
-                      >
-                        <PlusIcon size={14} />
-                        Event
-                      </button>
-                      <button
-                        onClick={() => startEdit(day)}
-                        aria-label={`Edit label for day ${index + 1}`}
-                        className="day-edit-btn"
-                      >
-                        <PencilIcon size={20} />
-                      </button>
-                      <button
-                        onClick={() => setConfirmDeleteId(day.id)}
-                        aria-label={`Delete day ${index + 1}`}
-                        className="day-delete-btn"
-                      >
-                        <TrashIcon size={20} />
-                      </button>
+                      {onAddEvent && (
+                        <button
+                          onClick={() => onAddEvent(day)}
+                          aria-label={`Add event to day ${index + 1}`}
+                          className="day-add-event-btn"
+                        >
+                          <PlusIcon size={14} />
+                          Event
+                        </button>
+                      )}
+                      {onUpdateDayLabel && (
+                        <button
+                          onClick={() => startEdit(day)}
+                          aria-label={`Edit label for day ${index + 1}`}
+                          className="day-edit-btn"
+                        >
+                          <PencilIcon size={20} />
+                        </button>
+                      )}
+                      {onDeleteDay && (
+                        <button
+                          onClick={() => setConfirmDeleteId(day.id)}
+                          aria-label={`Delete day ${index + 1}`}
+                          className="day-delete-btn"
+                        >
+                          <TrashIcon size={20} />
+                        </button>
+                      )}
 
                       {/* Delete confirmation popover */}
-                      {isConfirmingDelete && (
+                      {isConfirmingDelete && onDeleteDay && (
                         <div className="delete-popover">
                           <p className="delete-popover-text">
                             Delete Day {index + 1} and all its events?
@@ -150,13 +156,15 @@ const ItineraryList = ({ days, onAddDay, onUpdateDayLabel, onDeleteDay, onAddEve
       )}
 
       {/* Add Day button */}
-      <button
-        onClick={onAddDay}
-        className="add-day-btn"
-      >
-        <PlusIcon size={18} />
-        Add Day
-      </button>
+      {onAddDay && (
+        <button
+          onClick={onAddDay}
+          className="add-day-btn"
+        >
+          <PlusIcon size={18} />
+          Add Day
+        </button>
+      )}
     </div>
   );
 };

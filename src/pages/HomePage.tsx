@@ -28,6 +28,7 @@ const HomePage = () => {
         budget: 0,
         bannerImageUrl: null,
         shared: [],
+        roles: {},
       });
       navigate(`/trip/${id}`);
     } catch (err) {

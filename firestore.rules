@@ -15,6 +15,26 @@ service cloud.firestore {
       return isTripOwner(tripData) || request.auth.uid in tripData.shared;
     }
 
+    // Returns the role string for the current user on a trip.
+    // Owner → 'owner', shared users → their role from the roles map (default 'viewer').
+    function getUserRole(tripData) {
+      return isTripOwner(tripData)
+        ? 'owner'
+        : (request.auth.uid in tripData.roles
+            ? tripData.roles[request.auth.uid]
+            : 'viewer');
+    }
+
+    function canEdit(tripData) {
+      let role = getUserRole(tripData);
+      return role == 'owner' || role == 'admin' || role == 'editor';
+    }
+
+    function canDelete(tripData) {
+      let role = getUserRole(tripData);
+      return role == 'owner' || role == 'admin';
+    }
+
     // Users — any authenticated user can read (needed for email lookup),
     // but only the account owner can write their own document.
     match /users/{userId} {
@@ -29,32 +49,48 @@ service cloud.firestore {
       // Authenticated user can create a trip they own.
       allow create: if isAuthed() && request.auth.uid == request.resource.data.userId;
 
-      // Owner can update any field.
-      // Shared users can update other fields (e.g. budget edits if added later)
-      // but are NOT allowed to modify shared[] or userId.
-      allow update: if isAuthed() && (
-        isTripOwner(resource.data)
+      // Trip update rules by role:
+      //  owner/admin – can update any field
+      //  editor      – can update fields except shared[], roles, userId
+      //  viewer      – can only add to shared[] (invite) and set roles for new users
+      allow update: if isAuthed() && hasTripAccess(resource.data) && (
+        canDelete(resource.data)
         ||
         (
-          request.auth.uid in resource.data.shared &&
-          request.resource.data.shared == resource.data.shared &&
+          canEdit(resource.data) &&
           request.resource.data.userId == resource.data.userId
+        )
+        ||
+        (
+          // Viewers can invite: shared[] may grow and roles may gain new keys,
+          // but userId must stay the same and no other fields may change.
+          getUserRole(resource.data) == 'viewer' &&
+          request.resource.data.userId == resource.data.userId &&
+          request.resource.data.name == resource.data.name &&
+          request.resource.data.budget == resource.data.budget &&
+          request.resource.data.bannerImageUrl == resource.data.bannerImageUrl
         )
       );
 
-      // Only the owner can delete a trip.
-      allow delete: if isAuthed() && isTripOwner(resource.data);
+      // Only the owner or admins can delete a trip.
+      allow delete: if isAuthed() && canDelete(resource.data);
 
-      // Days subcollection — owner or shared users.
+      // Days subcollection — read for anyone with access, write for editors+.
       match /days/{dayId} {
-        allow read, write: if isAuthed() &&
+        allow read: if isAuthed() &&
           hasTripAccess(get(/databases/$(database)/documents/trips/$(tripId)).data);
+        allow write: if isAuthed() &&
+          canEdit(get(/databases/$(database)/documents/trips/$(tripId)).data);
       }
 
-      // Events nested under days — owner or shared users.
+      // Events nested under days — read for anyone with access, write for editors+.
       match /days/{dayId}/events/{eventId} {
-        allow read, write: if isAuthed() &&
+        allow read: if isAuthed() &&
           hasTripAccess(get(/databases/$(database)/documents/trips/$(tripId)).data);
+        allow create, update: if isAuthed() &&
+          canEdit(get(/databases/$(database)/documents/trips/$(tripId)).data);
+        allow delete: if isAuthed() &&
+          canDelete(get(/databases/$(database)/documents/trips/$(tripId)).data);
       }
     }
 

@@ -21,6 +21,7 @@ const useTrip = (tripId: string) => {
                     setTrip({
                         ...data,
                         startDate: toDate(data.startDate as Date | Timestamp),
+                        roles: data.roles ?? {},
                     });
                 } else {
                     setError('Trip not found');

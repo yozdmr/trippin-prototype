@@ -133,6 +133,48 @@
   @apply outline-none flex-1 min-w-28 text-sm bg-transparent placeholder-gray-400;
 }
 
+/* Role picker section */
+
+.share-modal-roles {
+  @apply mt-4 flex flex-col gap-3;
+}
+
+.share-modal-roles-heading {
+  @apply text-sm font-semibold text-gray-700;
+}
+
+.share-modal-role-row {
+  @apply flex flex-col gap-1.5 bg-gray-50 rounded-xl p-3;
+}
+
+.share-modal-role-user {
+  @apply flex items-center gap-2;
+}
+
+.share-modal-role-avatar {
+  @apply w-6 h-6 rounded-full object-cover flex-shrink-0;
+}
+
+.share-modal-role-name {
+  @apply text-sm font-medium text-gray-800;
+}
+
+.share-modal-role-picker {
+  @apply flex gap-1.5 mt-1;
+}
+
+.share-modal-role-btn {
+  @apply flex-1 text-xs font-medium py-1.5 px-2 rounded-lg border border-gray-200 text-gray-500 bg-white transition-colors;
+}
+
+.share-modal-role-btn-active {
+  @apply bg-green-700 text-white border-green-700;
+}
+
+.share-modal-role-desc {
+  @apply text-xs text-gray-400 mt-0.5;
+}
+
 .share-modal-submit {
   @apply mt-4 w-full bg-green-700 hover:bg-green-800 text-white rounded-xl py-2.5 font-semibold transition-colors;
 }
